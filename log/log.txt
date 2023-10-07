@@ -1,0 +1,7 @@
+A new movie document with name test3 hase been created by admin1
+A new movie document with name test2 hase been created by admin1
+A new movie document with name undefined hase been created by admin1
+A new movie document with name undefined hase been created by admin1
+A new movie document with name undefined hase been created by admin1
+A new movie document with name undefined hase been created by admin1
+A new movie document with name test3 hase been created by admin1
