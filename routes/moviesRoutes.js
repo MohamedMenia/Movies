@@ -8,12 +8,12 @@ router.route('/highest-rated').get(moviesController.getHighestRated,moviesContro
 router
   .route("/")
   .get(authController.protect,moviesController.getAllMovies)
-  .post(authController.protect,moviesController.createMovie);
+  .post(authController.protect,authController.restrict('admin'),moviesController.createMovie);
 
 router
   .route("/:id")
   .get(authController.protect,moviesController.getMovie)
-  .patch(moviesController.updateMovie)
+  .patch(authController.protect,authController.restrict('admin'),moviesController.updateMovie)
   .delete(authController.protect,authController.restrict('admin'),moviesController.deleteMovie);
 
 module.exports = router;
