@@ -41,10 +41,6 @@ app.all("*", (req, res, next) => {
 
 app.use(globalErrorHandler);
 
-//creating server
-app.listen(process.env.PORT, () => {
-  console.log("server has started");
-});
 
 //handel unhandled Rejection error
 process.on("unhandledRejection", (err) => {
@@ -54,4 +50,8 @@ process.on("unhandledRejection", (err) => {
   server.close(() => {
     process.exit(1);
   });
+});
+//creating server
+app.listen(process.env.PORT, () => {
+  console.log("server has started");
 });
