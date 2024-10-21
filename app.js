@@ -2,6 +2,10 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
+const rateLimiter = require("express-rate-limit");
+const mongoSanitize = require("express-mongo-sanitize");
+const xss = require("xss-clean");
+const helmet = require("helmet");
 //importing routes
 const authRoutes = require("./routes/authRouter");
 const moviesRoutes = require("./routes/moviesRoutes");
@@ -23,10 +27,26 @@ mongoose
     console.log(error);
   });
 
-app.use(express.json());
+  // setting security http headers
+const limiter = rateLimiter({
+  max: 1000,
+  windowMs: 60 * 60 * 1000,
+  message:
+    "We have received too many requests from this IP, please try again in an hour",
+});
+
+app.use(limiter);
+app.use(mongoSanitize());
+app.use(xss());
+app.use(helmet());
+
+app.use(
+  express.json({
+    limit: "10kb",
+  })
+);
 app.use("/movies", moviesRoutes);
 app.use("/users", authRoutes);
-
 app.all("*", (req, res, next) => {
   // globalErrorHandler
   // const err = new Error(`can't find  ${req.originalUrl} on the server`);
@@ -40,7 +60,6 @@ app.all("*", (req, res, next) => {
 });
 
 app.use(globalErrorHandler);
-
 
 //handel unhandled Rejection error
 process.on("unhandledRejection", (err) => {

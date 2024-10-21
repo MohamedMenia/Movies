@@ -1,5 +1,5 @@
 const Movie = require("../models/moviesModel");
-const apiFeatures = require("../utils/apiFeatures");
+const ApiFeatures = require("../utils/apiFeatures");
 const CustomError = require("../utils/customError");
 const asyncErrorHandler = require("../utils/asyncErrorHandler");
 
@@ -10,12 +10,20 @@ exports.getHighestRated = (req, res, next) => {
 };
 
 exports.getAllMovies = asyncErrorHandler(async (req, res) => {
-  const features = new apiFeatures(Movie, req.query).filter().sort().paginate();
+  const features = new ApiFeatures(Movie.find(), req.query)
+    .filter()
+    .sort()
+    .paginate();
 
-  const movies = await features.query;
+  const [totalPages, movies] = await Promise.all([
+    features.getTotalPages(),
+    features.query,
+  ]);
+
   res.status(200).json({
     status: "success",
     length: movies.length,
+    totalPages,
     data: { movies },
   });
 });
